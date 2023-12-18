@@ -1,0 +1,173 @@
+#define constant NINE = 0x9
+#define constant NINE_NINE = 0x63
+#define constant NINE_NINE_NINE = 0x3e7
+#define constant NINE_NINE_NINE_NINE = 0x270f
+
+#define constant ONE_WITH_THIRTY_EIGHT_ZEROES = 0x4b3b4ca85a86c47a098a224000000000
+#define constant ONE_WITH_TWENTY_ZEROES = 0x56bc75e2d63100000
+#define constant ONE_WITH_TEN_ZEROES = 0x2540be400
+#define constant ONE_WITH_FIVE_ZEROES = 0x186a0
+
+#define constant THIRTY_EIGHT = 0x26
+#define constant TWENTY = 0x14
+#define constant TEN = 0x0a
+#define constant FIVE = 0x05
+
+#define macro MAIN() = {
+    /// push default r to the stack, default is 0
+    msize                                                                   // [r[9]]                            
+    msize                                                                   // [r[8], r[9]]
+    msize                                                                   // [r[7], r[8], r[9]]
+    msize                                                                   // [r[6], r[7], r[8], r[9]]
+    msize                                                                   // [r[5], r[6], r[7], r[8], r[9]]
+    msize                                                                   // [r[4], r[5], r[6], r[7], r[8], r[9]]
+    msize                                                                   // [r[3], r[4], r[5], r[6], r[7], r[8], r[9]]
+    msize                                                                   // [r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9]]
+    msize                                                                   // [r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9]]
+    msize                                                                   // [r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9]]
+
+
+    0x04                                                                    // [0x04, r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9]]
+    calldataload                                                            // [x[0], r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9]]
+    LOG10(msize)                                                            // [r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9]]
+
+    0x24                                                                    // [0x24, r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9]]
+    calldataload                                                            // [x[1], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9]]
+    LOG10(msize)                                                            // [r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9]]
+
+    0x44                                                                    // [0x44, r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9]]
+    calldataload                                                            // [x[2], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9]]
+    LOG10(msize)                                                            // [r[3], r[4], r[5], r[6], r[7], r[8], r[9]]
+
+    0x64                                                                    // [0x64, r[3], r[4], r[5], r[6], r[7], r[8], r[9]]
+    calldataload                                                            // [x[3], r[3], r[4], r[5], r[6], r[7], r[8], r[9]]
+    LOG10(msize)                                                            // [r[4], r[5], r[6], r[7], r[8], r[9]]
+
+    0x84                                                                    // [0x84, r[4], r[5], r[6], r[7], r[8], r[9]]
+    calldataload                                                            // [x[4], r[4], r[5], r[6], r[7], r[8], r[9]]
+    LOG10(msize)                                                            // [r[5], r[6], r[7], r[8], r[9]]
+                                           
+    0xa4                                                                    // [0xa4, r[5], r[6], r[7], r[8], r[9]]
+    calldataload                                                            // [x[5], r[5], r[6], r[7], r[8], r[9]]
+    LOG10(msize)                                                            // [r[6], r[7], r[8], r[9]]
+
+    0xc4                                                                    // [0xc4, r[6], r[7], r[8], r[9]]
+    calldataload                                                            // [x[6], r[6], r[7], r[8], r[9]]
+    LOG10(msize)                                                            // [r[7], r[8], r[9]]
+
+    0xe4                                                                    // [0xe4, r[7], r[8], r[9]]
+    calldataload                                                            // [x[7], r[7], r[8], r[9]]
+    LOG10(msize)                                                            // [r[8], r[9]]
+
+    0x104                                                                   // [0x104, r[8], r[9]]
+    calldataload                                                            // [x[8], r[8], r[9]]
+    LOG10(msize)                                                            // [r[9]]
+
+    0x124                                                                   // [0x124, r[9]]
+    calldataload                                                            // [x[9], r[9]]
+    LOG10(msize)                                                            // []
+
+                                                    
+    msize                                                                   // [msize]
+    returndatasize                                                          // [0x00, msize]
+    return                                                                  // []
+}
+
+
+/// @dev computes log10 for a number
+/// @param mem_to_store_result memory offset to store the log10 of x
+#define macro LOG10(mem_to_store_result) = {
+    /// expects stack:                                                         [x, r]
+    /// output stack:                                                          []
+
+    COMPARE_WITH_ONE_WITH_THIRTY_EIGHT_ZEROES()                             // [x, r]                  
+    COMPARE_WITH_OTHERS(ONE_WITH_TWENTY_ZEROES, TWENTY)                     // [x, r]
+    COMPARE_WITH_OTHERS(ONE_WITH_TEN_ZEROES, TEN)                           // [x, r]
+    COMPARE_WITH_OTHERS(ONE_WITH_FIVE_ZEROES, FIVE)                         // [x, r]           
+
+
+    COMPARE_NINES(NINE, dup2)                                               // [(x > NINE), x, r]           
+    swap1                                                                   // [x, (x > NINE), r]
+            
+    COMPARE_NINES(NINE_NINE, dup2)                                          // [(x > NINE_NINE), x, (x > NINE), r]
+    swap1                                                                   // [x, (x > NINE_NINE), (x > NINE), r]
+                                                
+    COMPARE_NINES(NINE_NINE_NINE, dup2)                                     // [(x > NINE_NINE_NINE), x, (x > NINE_NINE), (x > NINE), r]
+    swap1                                                                   // [x, (x > NINE_NINE_NINE), (x > NINE_NINE), (x > NINE), r]
+                                                   
+    COMPARE_NINES(NINE_NINE_NINE_NINE, swap1)                               // [(x > NINE_NINE_NINE_NINE), (x > NINE_NINE_NINE), (x > NINE_NINE), (x > NINE), r]
+    
+
+    add                                                                     // [add((x > NINE_NINE_NINE_NINE), (x > NINE_NINE_NINE)), (x > NINE_NINE), (x > NINE), r]
+    add                                                                     // [add(add((x > NINE_NINE_NINE_NINE), (x > NINE_NINE_NINE)), (x > NINE_NINE)), (x > NINE), r]
+    add                                                                     // [add(add(add((x > NINE_NINE_NINE_NINE), (x > NINE_NINE_NINE)), (x > NINE_NINE)), (x > NINE)), r]
+    add                                                                     // [add(add(add(add((x > NINE_NINE_NINE_NINE), (x > NINE_NINE_NINE)), (x > NINE_NINE)), (x > NINE)), r)] or just [r]
+    
+       
+    <mem_to_store_result>                                                   // [mem_to_store_result, r]
+    mstore                                                                  // []
+}
+
+
+/// @dev check if x >= `compare_with`, if so do this
+/**                                                                     
+ *  ```sol
+ *      x := div(x, compare_with)
+ *      r := add(r, num_of_zeroes)
+ *  ```                                         
+ */       
+/// @param compare_with value to compare x with
+/// @param num_of_zeroes number of zeroes `compare_with` has when it is in decimal form
+#define macro COMPARE_WITH_OTHERS(compare_with, num_of_zeroes) = {
+    /// expects stack:                                                         [x, r]
+    /// output stack:                                                          [x, r]
+    
+    /// check
+    <compare_with>                                                          // [compare_with, x, r]
+    dup2                                                                    // [x, compare_with, x, r]
+    lt                                                                      // [(x < compare_with), x, r]
+    CONTINUE                                                                // [CONTINUE, (x < compare_with), x, r]
+    jumpi                                                                   // [x, r]
+    
+    /// if it does not jump, do the sol code commented above
+    <compare_with>                                                          // [compare_with, x, r]
+    swap1                                                                   // [x, compare_with, r]
+    div                                                                     // [x, r]
+    swap1                                                                   // [r, x]
+    <num_of_zeroes>                                                         // [num_of_zeroes, r, x]
+    add                                                                     // [r, x]
+    swap1                                                                   // [x, r]
+
+    CONTINUE:                                                               // [x, r]
+}
+
+/// @dev same as `COMPARE_WITH_OTHERS` but uses `ONE_WITH_THIRTY_EIGHT_ZEROES` as `compare_with` and `38` as `num_of_zeroes`.
+/// This is done separately because this is the first comparison made so add(r, num_of_zeroes) is the same as `num_of_zeroes` so we just set x to `num_of_zeroes` rather than adding
+#define macro COMPARE_WITH_ONE_WITH_THIRTY_EIGHT_ZEROES() = {
+    /// expects stack:                                                         [x, r]
+    /// output stack:                                                          [x, r]
+    
+    /// check
+    [ONE_WITH_THIRTY_EIGHT_ZEROES]                                          // [ONE_WITH_THIRTY_EIGHT_ZEROES, x, r]
+    dup2                                                                    // [x, ONE_WITH_THIRTY_EIGHT_ZEROES, x, r]
+    lt                                                                      // [(x < ONE_WITH_THIRTY_EIGHT_ZEROES), x, r]
+    CONTINUE                                                                // [CONTINUE, (x < ONE_WITH_THIRTY_EIGHT_ZEROES), x, r]
+    jumpi                                                                   // [x, r]
+    
+    /// if it does not jump, do the sol code commented above
+    [ONE_WITH_THIRTY_EIGHT_ZEROES]                                          // [ONE_WITH_THIRTY_EIGHT_ZEROES, x, r]
+    swap1                                                                   // [x, ONE_WITH_THIRTY_EIGHT_ZEROES, r]
+    div                                                                     // [x, r]
+    [THIRTY_EIGHT]                                                          // [THIRTY_EIGHT,x, r]
+    swap2                                                                   // [r, x, r]
+    pop                                                                     // [x, r]
+
+    CONTINUE:                                                               // [x, r]
+}
+
+/// @dev returns 1 if x is > `nine_type` else pushes 0
+#define macro COMPARE_NINES(nine_type, x) = {
+    <nine_type>                                                             // [nine_type]
+    <x>                                                                     // [x, nine_type]
+    gt                                                                      // [(x > nine_type)]
+}
