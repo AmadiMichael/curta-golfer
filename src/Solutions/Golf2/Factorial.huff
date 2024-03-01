@@ -1,0 +1,421 @@
+
+
+
+#define constant JUMP_TO_RETURN = 0x06
+#define constant ONE            = 0x01
+#define constant INVALID_START  = 0x3a
+
+#define constant FACTORIAL_2    = 0x2
+#define constant FACTORIAL_3    = 0x6
+#define constant FACTORIAL_4    = 0x18
+#define constant FACTORIAL_5    = 0x78
+#define constant FACTORIAL_6    = 0x2d0
+#define constant FACTORIAL_7    = 0x13b0
+#define constant FACTORIAL_8    = 0x9d80
+#define constant FACTORIAL_9    = 0x58980
+#define constant FACTORIAL_10   = 0x375f00
+#define constant FACTORIAL_11   = 0x2611500
+#define constant FACTORIAL_12   = 0x1c8cfc00
+#define constant FACTORIAL_13   = 0x17328cc00
+#define constant FACTORIAL_14   = 0x144c3b2800
+#define constant FACTORIAL_15   = 0x13077775800
+#define constant FACTORIAL_16   = 0x130777758000
+#define constant FACTORIAL_17   = 0x1437eeecd8000
+#define constant FACTORIAL_18   = 0x16beecca730000
+#define constant FACTORIAL_19   = 0x1b02b9306890000
+#define constant FACTORIAL_20   = 0x21c3677c82b40000
+#define constant FACTORIAL_21   = 0x2c5077d36b8c40000
+#define constant FACTORIAL_22   = 0x3ceea4c2b3e0d80000
+#define constant FACTORIAL_23   = 0x57970cd7e2933680000
+#define constant FACTORIAL_24   = 0x83629343d3dcd1c00000
+#define constant FACTORIAL_25   = 0xcd4a0619fb0907bc00000
+#define constant FACTORIAL_26   = 0x14d9849ea37eeac91800000
+#define constant FACTORIAL_27   = 0x232f0fcbb3e62c3358800000
+#define constant FACTORIAL_28   = 0x3d925ba47ad2cd59dae000000
+#define constant FACTORIAL_29   = 0x6f99461a1e9e1432dcb6000000
+#define constant FACTORIAL_30   = 0xd13f6370f96865df5dd54000000
+#define constant FACTORIAL_31   = 0x1956ad0aae33a4560c5cd2c000000
+#define constant FACTORIAL_32   = 0x32ad5a155c6748ac18b9a580000000
+#define constant FACTORIAL_33   = 0x688589cc0e9505e2f2fee5580000000
+#define constant FACTORIAL_34   = 0xde1bc4d19efcac82445da75b00000000
+#define constant FACTORIAL_35   = 0x1e5dcbe8a8bc8b95cf58cde17100000000
+#define constant FACTORIAL_36   = 0x44530acb7ba83a111287cf3b3e400000000
+#define constant FACTORIAL_37   = 0x9e0008f68df506477ada0f38fff400000000
+#define constant FACTORIAL_38   = 0x1774015499125eee9c3c5e4275fe3800000000
+#define constant FACTORIAL_39   = 0x392ac33e351cc7659cd325c1ff9ba8800000000
+#define constant FACTORIAL_40   = 0x8eeae81b84c7f27e080fde64ff05254000000000
+#define constant FACTORIAL_41   = 0x16e39f2c684405d62f4a8a9e2cd7d2f74000000000
+#define constant FACTORIAL_42   = 0x3c1581d491b28f523c23abdf35b689c908000000000
+#define constant FACTORIAL_43   = 0xa179cceb478fe12d019fdde7e05a924c458000000000
+#define constant FACTORIAL_44   = 0x1bc0ef38704cbab3bc477a23da8f91251bf20000000000
+#define constant FACTORIAL_45   = 0x4e0ea0cebbd7cd1981890784d6b3c8385e98a0000000000
+#define constant FACTORIAL_46   = 0xe06a0e525c0c6da95469f59de944dfa20ff6cc0000000000
+#define constant FACTORIAL_47   = 0x293378a11ee64822167f7417fdd3a50ec0ee4f740000000000
+#define constant FACTORIAL_48   = 0x7b9a69e35cb2d866437e5c47f97aef2c42caee5c00000000000
+#define constant FACTORIAL_49   = 0x17a88e4484be3b6b92eb2fa9c6c087c778c8d79f9c00000000000
+#define constant FACTORIAL_50   = 0x49eebc961ed279b02b1ef4f28d19a84f5973a1d2c7800000000000
+#define constant FACTORIAL_51   = 0xeba8f91e823ee3e18972acc521c1c87ced2093cfdbe800000000000
+#define constant FACTORIAL_52   = 0x2fde529a3274c649cfeb4b180adb5cb9602a9e0638ab2000000000000
+#define constant FACTORIAL_53   = 0x9e90719ec722d0d480bb68bfa3f6a3260e8d2b749bb6da000000000000
+#define constant FACTORIAL_54   = 0x217277f77e01580cd32788186c96066a0711c72a98d891fc000000000000
+#define constant FACTORIAL_55   = 0x72f97c62c1249eac15d7e3d3f543b60c784d1ca26d6875d24000000000000
+#define constant FACTORIAL_56   = 0x192693359a4002b5a4c739d65da6cfd2ba50de4387eed9c5fe0000000000000
+#define constant FACTORIAL_57   = 0x59996c6ef58409a71b05be0bada2445eb7c017d09442e7d158e0000000000000
+
+#define macro MAIN() = {
+    0x04                                                // [num_offset]
+    calldataload                                        // [num]
+    
+    [ONE]                                               // [ONE, num]
+    dup2                                                // [num, ONE, num]
+    gt                                                  // [(num > ONE), num]
+    START                                               // [START, (num > ONE), num]
+    jumpi                                               // [num]
+    
+    RETURN(ONE)
+
+
+    START:                                              // [num]
+        [INVALID_START]                                 // [INVALID_START, num]
+        dup2                                            // [num, INVALID_START, num]
+        lt                                              // [(num < INVALID_START), num]
+        RETURN_FACTORIAL                                // [RETURN_FACTORIAL, (num < INVALID_START), num]
+        jumpi                                           // [num]
+        returndatasize                                  // [0x00, num]
+        returndatasize                                  // [0x00, 0x00, num]
+        revert                                          // []
+        
+
+    RETURN_FACTORIAL:
+        [JUMP_TO_RETURN]                                // [JUMP_TO_RETURN, num]
+        shl                                             // [jumpdest]
+        jump                                            // []
+
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_2:
+        RETURN(FACTORIAL_2)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_3:
+        RETURN(FACTORIAL_3)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_4:
+        RETURN(FACTORIAL_4)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_5:
+        RETURN(FACTORIAL_5)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_6:
+        RETURN(FACTORIAL_6)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_7:
+        RETURN(FACTORIAL_7)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_8:
+        RETURN(FACTORIAL_8)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_9:
+        RETURN(FACTORIAL_9)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_10:
+        RETURN(FACTORIAL_10)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_11:
+        RETURN(FACTORIAL_11)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_12:
+        RETURN(FACTORIAL_12)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_13:
+        RETURN(FACTORIAL_13)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_14:
+        RETURN(FACTORIAL_14)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_15:
+        RETURN(FACTORIAL_15)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop 
+    IF_16:
+        RETURN(FACTORIAL_16)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop 
+    IF_17:
+        RETURN(FACTORIAL_17)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop 
+    IF_18:
+        RETURN(FACTORIAL_18)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop 
+    IF_19:
+        RETURN(FACTORIAL_19)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop 
+    IF_20:
+        RETURN(FACTORIAL_20)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop 
+    IF_21:
+        RETURN(FACTORIAL_21)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop 
+    IF_22:
+        RETURN(FACTORIAL_22)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop 
+    IF_23:
+        RETURN(FACTORIAL_23)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop 
+    IF_24:
+        RETURN(FACTORIAL_24)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop 
+    IF_25:
+        RETURN(FACTORIAL_25)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop 
+    IF_26:
+        RETURN(FACTORIAL_26)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop 
+    IF_27:
+        RETURN(FACTORIAL_27)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop 
+    IF_28:
+        RETURN(FACTORIAL_28)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop 
+    IF_29:
+        RETURN(FACTORIAL_29)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop 
+    IF_30:
+        RETURN(FACTORIAL_30)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop 
+    IF_31:
+        RETURN(FACTORIAL_31)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop 
+    IF_32:
+        RETURN(FACTORIAL_32)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop 
+    IF_33:
+        RETURN(FACTORIAL_33)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop 
+    IF_34:
+        RETURN(FACTORIAL_34)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop 
+    IF_35:
+        RETURN(FACTORIAL_35)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    
+    IF_36:
+        RETURN(FACTORIAL_36)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_37:
+        RETURN(FACTORIAL_37)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_38:
+        RETURN(FACTORIAL_38)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_39:
+        RETURN(FACTORIAL_39)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_40:
+        RETURN(FACTORIAL_40)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_41:
+        RETURN(FACTORIAL_41)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_42:
+        RETURN(FACTORIAL_42)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_43:
+        RETURN(FACTORIAL_43)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_44:
+        RETURN(FACTORIAL_44)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_45:
+        RETURN(FACTORIAL_45)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_46:
+        RETURN(FACTORIAL_46)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_47:
+        RETURN(FACTORIAL_47)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop stop 
+    IF_48:
+        RETURN(FACTORIAL_48)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop stop 
+    IF_49:
+        RETURN(FACTORIAL_49)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop 
+    IF_50:
+        RETURN(FACTORIAL_50)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop stop 
+    IF_51:
+        RETURN(FACTORIAL_51)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop stop 
+    IF_52:
+        RETURN(FACTORIAL_52)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop 
+    IF_53:
+        RETURN(FACTORIAL_53)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop stop 
+    IF_54:
+        RETURN(FACTORIAL_54)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop stop 
+    IF_55:
+        RETURN(FACTORIAL_55)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop stop 
+    IF_56:
+        RETURN(FACTORIAL_56)
+ 
+    stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop stop
+    stop stop stop stop stop 
+    IF_57:
+        RETURN(FACTORIAL_57)
+}
+
+
+#define macro RETURN(result) = {
+    <result>                                            // [result]
+    msize                                               // [0x00, result]
+    mstore                                              // []
+    msize                                               // [0x20]
+    returndatasize                                      // [0x00, 0x20]
+    return                                              // []
+}
